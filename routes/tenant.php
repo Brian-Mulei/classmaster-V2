@@ -3,27 +3,33 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
-use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
-use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
+use Stancl\Tenancy\Middleware\InitializeTenancyByPath;
+use Stancl\Tenancy\Middleware\InitializeTenancyBySubdomain;
 
 /*
 |--------------------------------------------------------------------------
 | Tenant Routes
+|
+| TENANT_ROUTE_MODE in .env controls identification strategy:
+|
+|   path      → /{tenant}/...   (local dev, no DNS needed)
+|   subdomain → subdomain.app.com/...  (production, requires wildcard DNS)
+|
+| The tenant slug is the same in both cases — only the routing changes.
 |--------------------------------------------------------------------------
-|
-| Here you can register the tenant routes for your application.
-| These routes are loaded by the TenantRouteServiceProvider.
-|
-| Feel free to customize them however you want. Good luck!
-|
 */
 
-Route::middleware([
-    'web',
-    InitializeTenancyByDomain::class,
-    PreventAccessFromCentralDomains::class,
-])->group(function () {
-    Route::get('/', function () {
-        return 'This is your multi-tenant application. The id of the current tenant is ' . tenant('id');
-    });
-});
+$mode = config('tenancy.route_mode', 'path');
+
+if ($mode === 'subdomain') {
+    Route::middleware(['web', InitializeTenancyBySubdomain::class])
+        ->group(function () {
+            require __DIR__ . '/tenant_routes.php';
+        });
+} else {
+    Route::middleware(['web', InitializeTenancyByPath::class])
+        ->prefix('/{tenant}')
+        ->group(function () {
+            require __DIR__ . '/tenant_routes.php';
+        });
+}

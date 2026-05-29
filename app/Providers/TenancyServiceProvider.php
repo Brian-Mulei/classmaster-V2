@@ -27,7 +27,7 @@ class TenancyServiceProvider extends ServiceProvider
                 JobPipeline::make([
                     Jobs\CreateDatabase::class,
                     Jobs\MigrateDatabase::class,
-                    // Jobs\SeedDatabase::class,
+                    Jobs\SeedDatabase::class,
 
                     // Your own jobs to prepare the tenant.
                     // Provision API keys, create S3 buckets, anything you want!
@@ -122,11 +122,9 @@ class TenancyServiceProvider extends ServiceProvider
     {
         $this->app->booted(function () {
             if (file_exists(base_path('routes/tenant.php'))) {
-                Route::middleware([
-                    'web',
-                    Middleware\InitializeTenancyBySubdomain::class,
-                    Middleware\PreventAccessFromCentralDomains::class,
-                ])->namespace(static::$controllerNamespace)
+                // Middleware is declared inside routes/tenant.php itself,
+                // so we just register the file here.
+                Route::namespace(static::$controllerNamespace)
                     ->group(base_path('routes/tenant.php'));
             }
         });

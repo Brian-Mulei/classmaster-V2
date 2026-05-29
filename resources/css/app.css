@@ -4,7 +4,105 @@
 @source '../../storage/framework/views/*.php';
 @source '../../vendor/livewire/livewire/src/**/*.blade.php';
 
-@theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+/* =============================================================================
+   PALETTE — change the values in this one block to switch the entire colour scheme.
+   Colours are OKLCh(lightness chroma hue).
+   - Hue 262  ≈ indigo/violet (default)
+   - Hue 220  ≈ blue
+   - Hue 160  ≈ teal/green
+   - Hue 30   ≈ amber
+   Swap ALL three `--cm-h-*` variables below to change the palette.
+   ============================================================================= */
+@layer base {
+    :root {
+        /* ── Brand hue/chroma knobs (touch ONLY these to repalette) ── */
+        --cm-h-brand:    262;   /* hue    */
+        --cm-c-brand:    0.22;  /* chroma */
+        --cm-c-brand-xs: 0.04;  /* low-chroma tint (surfaces, borders) */
+
+        /* ── Light mode semantic tokens (generated from knobs above) ── */
+        --cm-brand-50:   oklch(0.97 var(--cm-c-brand-xs) var(--cm-h-brand));
+        --cm-brand-100:  oklch(0.93 0.07                 var(--cm-h-brand));
+        --cm-brand-200:  oklch(0.87 0.11                 var(--cm-h-brand));
+        --cm-brand-300:  oklch(0.78 0.15                 var(--cm-h-brand));
+        --cm-brand-400:  oklch(0.67 0.19                 var(--cm-h-brand));
+        --cm-brand-500:  oklch(0.55 var(--cm-c-brand)    var(--cm-h-brand));
+        --cm-brand-600:  oklch(0.46 var(--cm-c-brand)    var(--cm-h-brand));
+        --cm-brand-700:  oklch(0.38 0.19                 var(--cm-h-brand));
+        --cm-brand-800:  oklch(0.30 0.14                 var(--cm-h-brand));
+        --cm-brand-900:  oklch(0.22 0.09                 var(--cm-h-brand));
+
+        /* ── App-level semantic aliases (light mode) ── */
+        --color-bg:        oklch(0.98 var(--cm-c-brand-xs) var(--cm-h-brand));
+        --color-surface:   oklch(1    0                    0);
+        --color-surface-2: oklch(0.96 var(--cm-c-brand-xs) var(--cm-h-brand));
+        --color-border:    oklch(0.90 var(--cm-c-brand-xs) var(--cm-h-brand));
+        --color-text:      oklch(0.15 0.02                 var(--cm-h-brand));
+        --color-text-muted:oklch(0.50 0.04                 var(--cm-h-brand));
+        --color-primary:   var(--cm-brand-500);
+        --color-primary-hover: var(--cm-brand-600);
+        --color-primary-text:  oklch(1 0 0);
+
+        /* ── Status colours ── */
+        --color-success:  oklch(0.52 0.17 145);
+        --color-warning:  oklch(0.68 0.18 60);
+        --color-danger:   oklch(0.53 0.22 25);
+        --color-info:     oklch(0.57 0.17 235);
+    }
+
+    /* Dark mode: add `class="dark"` to <html> */
+    .dark {
+        --color-bg:        oklch(0.13 var(--cm-c-brand-xs) var(--cm-h-brand));
+        --color-surface:   oklch(0.18 var(--cm-c-brand-xs) var(--cm-h-brand));
+        --color-surface-2: oklch(0.22 var(--cm-c-brand-xs) var(--cm-h-brand));
+        --color-border:    oklch(0.30 var(--cm-c-brand-xs) var(--cm-h-brand));
+        --color-text:      oklch(0.93 0.01                 var(--cm-h-brand));
+        --color-text-muted:oklch(0.65 0.03                 var(--cm-h-brand));
+        --color-primary:   var(--cm-brand-400);
+        --color-primary-hover: var(--cm-brand-300);
+        --color-primary-text:  oklch(0.10 0.01 var(--cm-h-brand));
+    }
+}
+
+/* =============================================================================
+   THEME — maps Tailwind utility classes to the semantic tokens above.
+   Use `bg-app`, `text-primary`, `border-border`, etc. in templates.
+   ============================================================================= */
+@theme inline {
+    /* Surfaces */
+    --color-app:       var(--color-bg);
+    --color-surface:   var(--color-surface);
+    --color-surface-2: var(--color-surface-2);
+    --color-border:    var(--color-border);
+
+    /* Text */
+    --color-text:       var(--color-text);
+    --color-muted:      var(--color-text-muted);
+
+    /* Brand */
+    --color-primary:       var(--color-primary);
+    --color-primary-hover: var(--color-primary-hover);
+    --color-primary-txt:   var(--color-primary-text);
+
+    /* Brand scale (bg-brand-100, text-brand-600, etc.) */
+    --color-brand-50:  var(--cm-brand-50);
+    --color-brand-100: var(--cm-brand-100);
+    --color-brand-200: var(--cm-brand-200);
+    --color-brand-300: var(--cm-brand-300);
+    --color-brand-400: var(--cm-brand-400);
+    --color-brand-500: var(--cm-brand-500);
+    --color-brand-600: var(--cm-brand-600);
+    --color-brand-700: var(--cm-brand-700);
+    --color-brand-800: var(--cm-brand-800);
+    --color-brand-900: var(--cm-brand-900);
+
+    /* Status */
+    --color-success: var(--color-success);
+    --color-warning: var(--color-warning);
+    --color-danger:  var(--color-danger);
+    --color-info:    var(--color-info);
+
+    /* Font */
+    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif,
+        'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 }

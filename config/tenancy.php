@@ -6,7 +6,7 @@ use Stancl\Tenancy\Database\Models\Domain;
 use Stancl\Tenancy\Database\Models\Tenant;
 
 return [
-    'tenant_model' => Tenant::class,
+    'tenant_model' => App\Models\Tenant::class,
     'id_generator' => Stancl\Tenancy\UUIDGenerator::class,
 
     'domain_model' => Domain::class,
@@ -189,7 +189,20 @@ return [
      * Parameters used by the tenants:seed command.
      */
     'seeder_parameters' => [
-        '--class' => 'DatabaseSeeder', // root seeder class
-        // '--force' => true, // This needs to be true to seed tenant databases in production
+        '--class' => 'Database\\Seeders\\TenantDataSeeder',
+        '--force' => true,
     ],
+
+    /*
+     * 'path'      — local dev, no DNS needed.  Tenants at /{slug}/...
+     * 'subdomain' — production. Tenants at {slug}.yourdomain.com
+     *               Requires: wildcard DNS *.yourdomain.com → server
+     */
+    'route_mode' => env('TENANT_ROUTE_MODE', 'path'),
+
+    /*
+     * Base domain used to build tenant URLs in subdomain mode.
+     * Set this in production .env: APP_DOMAIN=classmaster.com
+     */
+    'central_domain' => env('APP_DOMAIN', 'localhost'),
 ];

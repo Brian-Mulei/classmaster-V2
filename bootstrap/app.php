@@ -12,7 +12,16 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        $middleware->redirectGuestsTo('/login');
+        $middleware->redirectUsersTo('/dashboard');
+
+        // Re-initialise tenancy for Livewire AJAX requests in path mode.
+        // Livewire POSTs to /livewire/update which has no {tenant} prefix,
+        // so InitializeTenancyByPath never runs. We detect the tenant from
+        // the Referer header instead.
+        $middleware->web(append: [
+            \App\Http\Middleware\InitializeTenancyForLivewire::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(
